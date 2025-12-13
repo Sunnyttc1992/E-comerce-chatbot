@@ -3,10 +3,16 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
+# Prevent Python buffering (better logs)
+ENV PYTHONUNBUFFERED=1
+
 COPY requirements.txt .
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-COPY app.py agent.py .
+COPY app.py agent.py ./
 
-# docker run --platform linux/x86_64 -p 8080:8080 --env-file .env gen_ai_agent 
+# App Runner expects 8080
+EXPOSE 8080
+
+# Start web server (must stay running)
 CMD ["python", "app.py"]
